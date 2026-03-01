@@ -1,0 +1,249 @@
+{% extends "base.html" %}
+{% block title %}Pencarian Penumpang{% endblock %}
+
+{% block content %}
+<!-- Hero / Search -->
+<div class="hero-section">
+    <div class="container">
+        <div class="text-center mb-4">
+            <div class="hero-subtitle">Sistem Pemeriksaan Lintas Batas Negara</div>
+            <h1 class="hero-title">Checkpoint Imigrasi</h1>
+            <p class="text-white-50 mb-0">Verifikasi identitas penumpang & deteksi daftar cekal secara real-time</p>
+        </div>
+
+        <!-- Search Form -->
+        <div class="row justify-content-center">
+            <div class="col-lg-7">
+                <div class="card search-card">
+                    <div class="card-body p-4">
+                        <h5 class="card-title mb-3 fw-bold text-dark">
+                            <i class="bi bi-search me-2 text-primary"></i>Cari Penumpang
+                        </h5>
+                        <form method="POST" action="{{ url_for('search.search') }}" id="search-form">
+
+                            <!-- Query Input -->
+                            <div class="input-group mb-3">
+                                <input
+                                    type="text"
+                                    class="form-control search-input"
+                                    id="search-query"
+                                    name="query"
+                                    placeholder="Nomor paspor atau nama lengkap..."
+                                    autofocus
+                                    autocomplete="off"
+                                    required
+                                >
+                                <button class="btn btn-primary search-btn" type="submit" id="search-btn">
+                                    <i class="bi bi-search me-1"></i>Cari
+                                </button>
+                            </div>
+
+                            <!-- Search Type -->
+                            <div class="d-flex flex-wrap gap-3 align-items-center mb-3">
+                                <small class="text-muted fw-semibold">Tipe:</small>
+                                <div class="form-check form-check-inline mb-0">
+                                    <input class="form-check-input" type="radio" name="search_type" id="type-auto" value="auto" checked>
+                                    <label class="form-check-label" for="type-auto">
+                                        <i class="bi bi-magic me-1"></i>Otomatis
+                                    </label>
+                                </div>
+                                <div class="form-check form-check-inline mb-0">
+                                    <input class="form-check-input" type="radio" name="search_type" id="type-passport" value="passport">
+                                    <label class="form-check-label" for="type-passport">
+                                        <i class="bi bi-passport me-1"></i>Nomor Paspor
+                                    </label>
+                                </div>
+                                <div class="form-check form-check-inline mb-0">
+                                    <input class="form-check-input" type="radio" name="search_type" id="type-name" value="name">
+                                    <label class="form-check-label" for="type-name">
+                                        <i class="bi bi-person me-1"></i>Nama
+                                    </label>
+                                </div>
+                            </div>
+                            <div id="search-type-hint" class="form-text mb-2"></div>
+
+                            <!-- Advanced Filters (collapsible) -->
+                            <div>
+                                <button
+                                    type="button"
+                                    class="btn btn-link btn-sm text-muted p-0 text-decoration-none"
+                                    data-bs-toggle="collapse"
+                                    data-bs-target="#advanced-filters"
+                                    id="advanced-toggle"
+                                >
+                                    <i class="bi bi-funnel me-1"></i>Filter Lanjutan
+                                    <i class="bi bi-chevron-down ms-1" id="advanced-chevron"></i>
+                                </button>
+
+                                <div class="collapse mt-3" id="advanced-filters">
+                                    <div class="p-3 rounded" style="background:#f0f4ff;border:1px dashed #c5cef0;">
+                                        <div class="row g-2 align-items-end">
+
+                                            <!-- Gender -->
+                                            <div class="col-sm-4">
+                                                <label class="form-label small fw-semibold mb-1">
+                                                    <i class="bi bi-gender-ambiguous me-1 text-primary"></i>Jenis Kelamin
+                                                </label>
+                                                <select class="form-select form-select-sm" name="gender" id="filter-gender">
+                                                    <option value="">Semua</option>
+                                                    <option value="M">Laki-laki</option>
+                                                    <option value="F">Perempuan</option>
+                                                </select>
+                                            </div>
+
+                                            <!-- Date of Birth -->
+                                            <div class="col-sm-4">
+                                                <label class="form-label small fw-semibold mb-1">
+                                                    <i class="bi bi-calendar-date me-1 text-primary"></i>Tanggal Lahir
+                                                </label>
+                                                <input
+                                                    type="date"
+                                                    class="form-control form-control-sm"
+                                                    name="date_of_birth"
+                                                    id="filter-dob"
+                                                >
+                                            </div>
+
+                                            <!-- Nationality -->
+                                            <div class="col-sm-4">
+                                                <label class="form-label small fw-semibold mb-1">
+                                                    <i class="bi bi-globe me-1 text-primary"></i>Kebangsaan
+                                                </label>
+                                                <select class="form-select form-select-sm" name="nationality" id="filter-nat">
+                                                    <option value="">Semua</option>
+                                                    <option value="ID">🇮🇩 Indonesia</option>
+                                                    <option value="MY">🇲🇾 Malaysia</option>
+                                                    <option value="SG">🇸🇬 Singapura</option>
+                                                    <option value="AU">🇦🇺 Australia</option>
+                                                    <option value="US">🇺🇸 Amerika Serikat</option>
+                                                    <option value="CN">🇨🇳 Tiongkok</option>
+                                                    <option value="GB">🇬🇧 Inggris</option>
+                                                    <option value="JP">🇯🇵 Jepang</option>
+                                                    <option value="DE">🇩🇪 Jerman</option>
+                                                    <option value="NL">🇳🇱 Belanda</option>
+                                                    <option value="SA">🇸🇦 Arab Saudi</option>
+                                                    <option value="KR">🇰🇷 Korea Selatan</option>
+                                                    <option value="IN">🇮🇳 India</option>
+                                                </select>
+                                            </div>
+
+                                            <!-- Helper text + filter badge -->
+                                            <div class="col-12 mt-1">
+                                                <div class="d-flex align-items-start gap-2">
+                                                    <i class="bi bi-info-circle text-primary flex-shrink-0" style="font-size:0.8rem;margin-top:2px;"></i>
+                                                    <small class="text-muted">
+                                                        Berlaku hanya untuk pencarian <strong>nama</strong>.
+                                                        Kombinasi nama + tanggal lahir sangat efektif mengurangi false positif.
+                                                    </small>
+                                                </div>
+                                                <div id="filter-active-badge" class="mt-2" style="display:none;">
+                                                    <span class="badge text-bg-primary" style="font-weight:500;">
+                                                        <i class="bi bi-funnel-fill me-1"></i>
+                                                        <span id="filter-count">0</span> filter aktif
+                                                    </span>
+                                                    <button type="button" class="btn btn-link btn-sm text-danger p-0 ms-2 text-decoration-none" id="clear-filters">
+                                                        <i class="bi bi-x-circle me-1"></i>Hapus semua
+                                                    </button>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tips & Info -->
+<div class="container my-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-7">
+            <div class="card border-0 bg-white shadow-sm">
+                <div class="card-body">
+                    <h6 class="fw-bold text-muted mb-3">
+                        <i class="bi bi-lightbulb me-2 text-warning"></i>Panduan Penggunaan
+                    </h6>
+                    <div class="row g-3">
+                        <div class="col-sm-6">
+                            <div class="d-flex gap-2">
+                                <span class="text-primary flex-shrink-0"><i class="bi bi-passport"></i></span>
+                                <div>
+                                    <div class="fw-semibold" style="font-size:0.85rem;">Nomor Paspor</div>
+                                    <small class="text-muted">Contoh: <code>A1234567</code>, <code>MYA773421</code></small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="d-flex gap-2">
+                                <span class="text-success flex-shrink-0"><i class="bi bi-person-search"></i></span>
+                                <div>
+                                    <div class="fw-semibold" style="font-size:0.85rem;">Nama + Filter Lanjutan</div>
+                                    <small class="text-muted">Nama + tanggal lahir untuk meminimalkan false positif</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="d-flex gap-2">
+                                <span class="text-danger flex-shrink-0"><i class="bi bi-shield-fill-exclamation"></i></span>
+                                <div>
+                                    <div class="fw-semibold" style="font-size:0.85rem;">Deteksi Blacklist</div>
+                                    <small class="text-muted">Otomatis memeriksa daftar cekal saat pencarian</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="d-flex gap-2">
+                                <span class="text-info flex-shrink-0"><i class="bi bi-clock-history"></i></span>
+                                <div>
+                                    <div class="fw-semibold" style="font-size:0.85rem;">Riwayat Perjalanan</div>
+                                    <small class="text-muted">Lihat histori kedatangan dan keberangkatan</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Chevron toggle
+const filtersEl = document.getElementById('advanced-filters');
+if (filtersEl) {
+    filtersEl.addEventListener('show.bs.collapse', function () {
+        document.getElementById('advanced-chevron').className = 'bi bi-chevron-up ms-1';
+    });
+    filtersEl.addEventListener('hide.bs.collapse', function () {
+        document.getElementById('advanced-chevron').className = 'bi bi-chevron-down ms-1';
+    });
+}
+
+// Filter active counter
+const filterIds = ['filter-gender', 'filter-dob', 'filter-nat'];
+function updateFilterBadge() {
+    const count = filterIds.filter(id => document.getElementById(id).value).length;
+    document.getElementById('filter-count').textContent = count;
+    document.getElementById('filter-active-badge').style.display = count > 0 ? 'block' : 'none';
+}
+filterIds.forEach(id => {
+    const el = document.getElementById(id);
+    el.addEventListener('change', updateFilterBadge);
+    el.addEventListener('input', updateFilterBadge);
+});
+
+// Clear all filters
+document.getElementById('clear-filters').addEventListener('click', function () {
+    filterIds.forEach(id => { document.getElementById(id).value = ''; });
+    updateFilterBadge();
+});
+</script>
+{% endblock %}

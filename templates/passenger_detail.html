@@ -1,0 +1,231 @@
+{% extends "base.html" %}
+{% block title %}{{ passenger.full_name }} — Detail Penumpang{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+    <!-- Back button -->
+    <div class="mb-3">
+        <a href="javascript:history.back()" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-arrow-left me-1"></i>Kembali
+        </a>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════
+         BLACKLIST WARNING BANNER
+    ═══════════════════════════════════════════════════════════ -->
+    {% if blacklist %}
+
+    {% if blacklist.match_confidence == 'SOFT' %}
+    <!-- Soft Warning -->
+    <div class="blacklist-banner blacklist-banner-soft mb-4">
+        <div class="d-flex align-items-start gap-3">
+            <span style="font-size:2rem;">⚠️</span>
+            <div class="flex-grow-1">
+                <div class="blacklist-title" style="font-size:1rem;color:#664d03;">
+                    PERLU VERIFIKASI LEBIH LANJUT
+                </div>
+                <div>{{ blacklist.match_reason }}</div>
+                <div class="mt-2">
+                    <span class="badge severity-{{ blacklist.severity | lower }} blacklist-badge-severity me-2">
+                        {{ blacklist.severity }}
+                    </span>
+                    <span class="fw-semibold">{{ blacklist.full_name }}</span>
+                    {% if blacklist.date_of_birth %} | TTL: {{ format_date(blacklist.date_of_birth) }}{% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% else %}
+    <!-- Full Blacklist Warning -->
+    <div class="blacklist-banner blacklist-banner-high mb-4 {% if blacklist.severity == 'CRITICAL' %}blacklist-critical{% endif %}">
+        <div class="d-flex align-items-start gap-3">
+            <span style="font-size:2.5rem;">🚨</span>
+            <div class="flex-grow-1">
+                <div class="blacklist-title">
+                    !! PERINGATAN: ORANG INI MASUK DAFTAR CEKAL !!
+                </div>
+                <div class="mb-2">{{ blacklist.match_reason }}</div>
+                <div class="row g-2 mt-1">
+                    <div class="col-sm-4">
+                        <div style="font-size:0.75rem;opacity:0.8;">TINGKAT ANCAMAN</div>
+                        <span class="badge severity-{{ blacklist.severity | lower }} blacklist-badge-severity">
+                            {{ blacklist.severity }} — {{ severity_label(blacklist.severity) }}
+                        </span>
+                    </div>
+                    <div class="col-sm-4">
+                        <div style="font-size:0.75rem;opacity:0.8;">ALASAN</div>
+                        <div class="fw-bold">{{ reason_label(blacklist.reason_code) }}</div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div style="font-size:0.75rem;opacity:0.8;">NO. KASUS</div>
+                        <div class="fw-bold">{{ blacklist.case_number or '-' }}</div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div style="font-size:0.75rem;opacity:0.8;">OTORITAS PENERBIT</div>
+                        <div class="fw-bold">{{ blacklist.issuing_authority or '-' }}</div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div style="font-size:0.75rem;opacity:0.8;">INSTANSI RUJUKAN</div>
+                        <div class="fw-bold">{{ blacklist.referring_agency or '-' }}</div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div style="font-size:0.75rem;opacity:0.8;">TGL. PENCEKALAN</div>
+                        <div class="fw-bold">{{ format_date(blacklist.blacklist_date) if blacklist.blacklist_date else '-' }}</div>
+                    </div>
+                </div>
+                {% if blacklist.reason %}
+                <div class="mt-2 p-2 rounded" style="background:rgba(0,0,0,0.2);font-size:0.9rem;">
+                    <i class="bi bi-file-text me-1"></i>{{ blacklist.reason }}
+                </div>
+                {% endif %}
+                {% if blacklist.notes %}
+                <div class="mt-2 p-2 rounded" style="background:rgba(255,255,0,0.15);font-size:0.85rem;">
+                    <i class="bi bi-sticky me-1"></i><strong>Catatan:</strong> {{ blacklist.notes }}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {% endif %}
+    <!-- ── End Blacklist Banner ─────────────────────────────────── -->
+
+
+    <!-- ══════════════════════════════════════════════════════════
+         PASSENGER INFO CARD
+    ═══════════════════════════════════════════════════════════ -->
+    <div class="card passenger-card mb-4">
+        <div class="passenger-card-header">
+            <div class="d-flex gap-3 align-items-center">
+                <div class="passenger-avatar">👤</div>
+                <div>
+                    <h3 class="mb-1 fw-bold">{{ passenger.full_name }}</h3>
+                    <div class="passport-number-badge mb-2">{{ passenger.passport_number }}</div>
+                    <div class="d-flex flex-wrap gap-2 align-items-center">
+                        <span class="badge bg-light text-dark px-3 py-2">
+                            {{ flag }} {{ passenger.nationality_name or passenger.nationality }}
+                        </span>
+                        <span class="badge {% if passenger.gender == 'M' %}bg-info{% else %}bg-pink{% endif %} px-3 py-2">
+                            {% if passenger.gender == 'M' %}♂ Laki-laki{% else %}♀ Perempuan{% endif %}
+                        </span>
+                        {% if not blacklist %}
+                        <span class="badge bg-success px-3 py-2">
+                            <i class="bi bi-check-circle me-1"></i>Tidak Tercekal
+                        </span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-body p-4">
+            <div class="section-heading">
+                <i class="bi bi-person-vcard me-2"></i>Informasi Identitas
+            </div>
+            <div class="row g-3">
+                <div class="col-sm-4">
+                    <div class="info-label">Tanggal Lahir</div>
+                    <div class="info-value">{{ format_date(passenger.date_of_birth) }}</div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="info-label">Tempat Lahir</div>
+                    <div class="info-value">{{ passenger.place_of_birth or '-' }}</div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="info-label">Pekerjaan</div>
+                    <div class="info-value">{{ passenger.occupation or '-' }}</div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="info-label">Tgl. Terbit Paspor</div>
+                    <div class="info-value">{{ format_date(passenger.passport_issue_date) }}</div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="info-label">Tempat Terbit</div>
+                    <div class="info-value">{{ passenger.passport_issue_place or '-' }}</div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="info-label">Berlaku s/d</div>
+                    <div class="info-value {% if passenger.passport_expiry and passenger.passport_expiry < '2026-01-01' %}text-danger fw-bold{% endif %}">
+                        {{ format_date(passenger.passport_expiry) }}
+                        {% if passenger.passport_expiry and passenger.passport_expiry < '2026-01-01' %}
+                        <span class="badge bg-danger ms-1">Kadaluarsa</span>
+                        {% endif %}
+                    </div>
+                </div>
+                {% if passenger.address %}
+                <div class="col-12">
+                    <div class="info-label">Alamat</div>
+                    <div class="info-value">{{ passenger.address }}</div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ══════════════════════════════════════════════════════════
+         TRAVEL HISTORY
+    ═══════════════════════════════════════════════════════════ -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-4">
+            <div class="section-heading">
+                <i class="bi bi-clock-history me-2"></i>Riwayat Perjalanan
+                <span class="badge bg-secondary ms-2" style="font-size:0.75rem;">{{ travel_history | length }} entri</span>
+            </div>
+
+            {% if travel_history %}
+            <div class="table-responsive">
+                <table class="table table-hover travel-table align-middle">
+                    <thead>
+                        <tr>
+                            <th>Tanggal</th>
+                            <th>Arah</th>
+                            <th>Pos Lintas Batas</th>
+                            <th>No. Penerbangan</th>
+                            <th>Dari</th>
+                            <th>Ke</th>
+                            <th>Tipe Visa</th>
+                            <th>Tujuan</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for trip in travel_history %}
+                        <tr>
+                            <td>
+                                <small class="fw-semibold">{{ format_date(trip.date) }}</small>
+                            </td>
+                            <td>
+                                {% if trip.direction == 'ARRIVAL' %}
+                                <span class="direction-arrival">⬇ KEDATANGAN</span>
+                                {% else %}
+                                <span class="direction-departure">⬆ KEBERANGKATAN</span>
+                                {% endif %}
+                            </td>
+                            <td style="font-size:0.82rem;">{{ trip.port_of_entry }}</td>
+                            <td>
+                                {% if trip.flight_number %}
+                                <code>{{ trip.flight_number }}</code>
+                                {% else %}-{% endif %}
+                            </td>
+                            <td><span class="fw-semibold">{{ trip.country_from or '-' }}</span></td>
+                            <td><span class="fw-semibold">{{ trip.country_to or '-' }}</span></td>
+                            <td style="font-size:0.82rem;">{{ trip.visa_type or '-' }}</td>
+                            <td style="font-size:0.82rem;">{{ trip.purpose or '-' }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="text-muted text-center py-3">
+                <i class="bi bi-inbox me-2"></i>Tidak ada riwayat perjalanan tercatat.
+            </p>
+            {% endif %}
+        </div>
+    </div>
+
+</div>
+{% endblock %}

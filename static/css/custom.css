@@ -1,0 +1,297 @@
+/* ═══════════════════════════════════════════════════════════════
+   Checkpoint Imigrasi - Custom Styles
+   Direktorat Jenderal Imigrasi, Republik Indonesia
+═══════════════════════════════════════════════════════════════ */
+
+:root {
+    --imi-blue: #003580;
+    --imi-gold: #c8a951;
+    --imi-red: #dc3545;
+    --imi-dark: #1a1a2e;
+}
+
+/* ── General ─────────────────────────────────────────────────── */
+body {
+    background-color: #f4f6f9;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* ── Navbar ──────────────────────────────────────────────────── */
+.navbar-imigrasi {
+    background: linear-gradient(135deg, var(--imi-dark) 0%, var(--imi-blue) 100%);
+    border-bottom: 3px solid var(--imi-gold);
+    padding: 0.6rem 1rem;
+}
+
+.navbar-brand-title {
+    font-weight: 700;
+    font-size: 1.1rem;
+    letter-spacing: 0.5px;
+    color: #ffffff !important;
+}
+
+.navbar-brand-subtitle {
+    font-size: 0.72rem;
+    color: var(--imi-gold) !important;
+    letter-spacing: 0.8px;
+}
+
+/* ── Hero / Search Section ───────────────────────────────────── */
+.hero-section {
+    background: linear-gradient(135deg, var(--imi-dark) 0%, var(--imi-blue) 100%);
+    color: white;
+    padding: 3rem 0 2.5rem;
+    margin-bottom: 2rem;
+}
+
+.hero-title {
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.hero-subtitle {
+    color: var(--imi-gold);
+    font-size: 0.9rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 0.3rem;
+}
+
+/* ── Search Card ─────────────────────────────────────────────── */
+.search-card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 53, 128, 0.15);
+}
+
+.search-input {
+    border-radius: 8px 0 0 8px !important;
+    border: 2px solid #dee2e6;
+    font-size: 1rem;
+    padding: 0.75rem 1rem;
+    transition: border-color 0.2s;
+}
+
+.search-input:focus {
+    border-color: var(--imi-blue);
+    box-shadow: 0 0 0 0.25rem rgba(0, 53, 128, 0.15);
+}
+
+.search-btn {
+    border-radius: 0 8px 8px 0 !important;
+    background: var(--imi-blue);
+    border-color: var(--imi-blue);
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+}
+
+.search-btn:hover {
+    background: #002460;
+    border-color: #002460;
+}
+
+/* ── Blacklist Warning Banners ───────────────────────────────── */
+.blacklist-banner {
+    border-radius: 10px;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1.5rem;
+    border-left: 6px solid;
+}
+
+.blacklist-banner-high {
+    background-color: #dc3545;
+    border-left-color: #a71d2a;
+    color: #fff;
+}
+
+.blacklist-banner-soft {
+    background-color: #fff3cd;
+    border-left-color: #ffc107;
+    color: #664d03;
+}
+
+.blacklist-critical {
+    animation: pulse-critical 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse-critical {
+    0%, 100% {
+        background-color: #dc3545;
+        box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.5);
+    }
+    50% {
+        background-color: #e8525f;
+        box-shadow: 0 0 0 8px rgba(220, 53, 69, 0);
+    }
+}
+
+.blacklist-title {
+    font-size: 1.2rem;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+}
+
+.blacklist-badge-severity {
+    font-size: 0.8rem;
+    font-weight: 700;
+    padding: 0.4em 0.8em;
+    border-radius: 20px;
+    letter-spacing: 1px;
+}
+
+/* ── Severity Colors ─────────────────────────────────────────── */
+.severity-critical { background-color: #721c24; color: #fff; }
+.severity-high     { background-color: #dc3545; color: #fff; }
+.severity-medium   { background-color: #fd7e14; color: #fff; }
+.severity-low      { background-color: #ffc107; color: #212529; }
+
+/* ── Passenger Card ──────────────────────────────────────────── */
+.passenger-card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+}
+
+.passenger-card-header {
+    background: linear-gradient(135deg, var(--imi-dark), var(--imi-blue));
+    color: white;
+    padding: 1.5rem;
+}
+
+.passenger-avatar {
+    width: 90px;
+    height: 110px;
+    background: linear-gradient(135deg, #c8a951, #a0843d);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    color: white;
+    flex-shrink: 0;
+}
+
+.passport-number-badge {
+    font-family: 'Courier New', monospace;
+    font-size: 1.1rem;
+    font-weight: 700;
+    background: rgba(255,255,255,0.15);
+    padding: 0.3rem 0.8rem;
+    border-radius: 6px;
+    letter-spacing: 2px;
+}
+
+/* ── Travel History ──────────────────────────────────────────── */
+.direction-arrival {
+    background-color: #198754;
+    color: white;
+    padding: 0.2em 0.6em;
+    border-radius: 4px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.direction-departure {
+    background-color: #0d6efd;
+    color: white;
+    padding: 0.2em 0.6em;
+    border-radius: 4px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.travel-table th {
+    background-color: var(--imi-blue);
+    color: white;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+/* ── Result Cards ────────────────────────────────────────────── */
+.result-card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+    transition: transform 0.15s, box-shadow 0.15s;
+    margin-bottom: 1rem;
+}
+
+.result-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+}
+
+.result-card.blacklisted {
+    border-left: 5px solid var(--imi-red);
+}
+
+.result-card.soft-warning {
+    border-left: 5px solid #ffc107;
+}
+
+.flag-emoji {
+    font-size: 1.6rem;
+    line-height: 1;
+}
+
+/* ── Footer ──────────────────────────────────────────────────── */
+.footer-imigrasi {
+    background: var(--imi-dark);
+    color: rgba(255,255,255,0.6);
+    padding: 1.5rem 0;
+    margin-top: 3rem;
+    font-size: 0.85rem;
+}
+
+.footer-imigrasi a {
+    color: var(--imi-gold);
+    text-decoration: none;
+}
+
+/* ── Info Labels ─────────────────────────────────────────────── */
+.info-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #6c757d;
+    font-weight: 600;
+    margin-bottom: 0.1rem;
+}
+
+.info-value {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #212529;
+}
+
+/* ── Section Headings ────────────────────────────────────────── */
+.section-heading {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--imi-blue);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--imi-gold);
+    margin-bottom: 1.2rem;
+}
+
+/* ── Admin Form ──────────────────────────────────────────────── */
+.admin-card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.admin-header {
+    background: linear-gradient(135deg, #721c24, #dc3545);
+    color: white;
+    border-radius: 12px 12px 0 0;
+    padding: 1.25rem 1.5rem;
+}

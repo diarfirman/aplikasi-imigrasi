@@ -1,0 +1,16 @@
+.env
+.claude/
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+*.egg-info/
+dist/
+build/
+.DS_Store
+*.log
+data_preview.json

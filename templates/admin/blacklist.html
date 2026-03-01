@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+{% block title %}Tambah Daftar Cekal{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+
+            <div class="mb-3">
+                <a href="{{ url_for('search.index') }}" class="btn btn-outline-secondary btn-sm">
+                    <i class="bi bi-arrow-left me-1"></i>Kembali ke Pencarian
+                </a>
+            </div>
+
+            <div class="card admin-card">
+                <div class="admin-header">
+                    <h4 class="mb-0 fw-bold">
+                        <i class="bi bi-shield-fill-x me-2"></i>Tambah ke Daftar Cekal
+                    </h4>
+                    <small class="opacity-75">Formulir ini hanya dapat diakses oleh petugas berwenang</small>
+                </div>
+                <div class="card-body p-4">
+
+                    <div class="alert alert-warning" role="alert">
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        <strong>Penting:</strong> Tanggal lahir <strong>wajib diisi</strong> untuk mencegah false positif pada penumpang dengan nama yang sama.
+                    </div>
+
+                    <form method="POST" action="{{ url_for('admin.blacklist_submit') }}">
+
+                        <!-- Identity -->
+                        <h6 class="section-heading mt-2">
+                            <i class="bi bi-person-badge me-2"></i>Identitas Subjek
+                        </h6>
+                        <div class="row g-3 mb-4">
+                            <div class="col-sm-6">
+                                <label class="form-label fw-semibold">Nomor Paspor</label>
+                                <input type="text" class="form-control" name="passport_number"
+                                       placeholder="Contoh: A1234567" style="font-family:monospace;text-transform:uppercase;">
+                                <div class="form-text">Kosongkan jika tidak diketahui</div>
+                            </div>
+                            <div class="col-sm-6">
+                                <label class="form-label fw-semibold">Nama Lengkap <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" name="full_name"
+                                       placeholder="Nama sesuai paspor" required>
+                            </div>
+                            <div class="col-sm-6">
+                                <label class="form-label fw-semibold">Kebangsaan</label>
+                                <select class="form-select" name="nationality">
+                                    {% for code, name in nationalities %}
+                                    <option value="{{ code }}">{{ name }} ({{ code }})</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-sm-6">
+                                <label class="form-label fw-semibold">Tanggal Lahir <span class="text-danger">*</span></label>
+                                <input type="date" class="form-control" name="date_of_birth" required>
+                                <div class="form-text text-danger">Wajib diisi untuk verifikasi identitas</div>
+                            </div>
+                        </div>
+
+                        <!-- Blacklist Details -->
+                        <h6 class="section-heading">
+                            <i class="bi bi-shield-exclamation me-2"></i>Detail Pencekalan
+                        </h6>
+                        <div class="row g-3 mb-4">
+                            <div class="col-sm-6">
+                                <label class="form-label fw-semibold">Tingkat Ancaman <span class="text-danger">*</span></label>
+                                <select class="form-select" name="severity" required>
+                                    {% for val, label in severities %}
+                                    <option value="{{ val }}" {% if val == 'MEDIUM' %}selected{% endif %}>{{ label }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-sm-6">
+                                <label class="form-label fw-semibold">Kode Alasan <span class="text-danger">*</span></label>
+                                <select class="form-select" name="reason_code" required>
+                                    {% for code, label in reason_codes %}
+                                    <option value="{{ code }}">{{ label }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label fw-semibold">Deskripsi Alasan <span class="text-danger">*</span></label>
+                                <textarea class="form-control" name="reason" rows="3"
+                                          placeholder="Jelaskan secara rinci alasan pencekalan..." required></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Case Info -->
+                        <h6 class="section-heading">
+                            <i class="bi bi-folder2-open me-2"></i>Informasi Kasus
+                        </h6>
+                        <div class="row g-3 mb-4">
+                            <div class="col-sm-6">
+                                <label class="form-label fw-semibold">Nomor Kasus</label>
+                                <input type="text" class="form-control" name="case_number"
+                                       placeholder="Contoh: IDN/2024/BNN/042">
+                            </div>
+                            <div class="col-sm-6">
+                                <label class="form-label fw-semibold">Instansi Rujukan</label>
+                                <select class="form-select" name="referring_agency">
+                                    <option value="">-- Pilih Instansi --</option>
+                                    {% for agency in agencies %}
+                                    <option value="{{ agency }}">{{ agency }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-sm-6">
+                                <label class="form-label fw-semibold">Otoritas Penerbit</label>
+                                <input type="text" class="form-control" name="issuing_authority"
+                                       value="Ditjen Imigrasi">
+                            </div>
+                            <div class="col-sm-6">
+                                <label class="form-label fw-semibold">Tanggal Pencekalan</label>
+                                <input type="date" class="form-control" name="blacklist_date"
+                                       value="{{ today }}">
+                            </div>
+                            <div class="col-sm-6">
+                                <label class="form-label fw-semibold">Berlaku s/d</label>
+                                <input type="date" class="form-control" name="expiry_date">
+                                <div class="form-text">Kosongkan jika permanen</div>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label fw-semibold">Catatan Tambahan</label>
+                                <textarea class="form-control" name="notes" rows="2"
+                                          placeholder="Instruksi khusus untuk petugas..."></textarea>
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-2 justify-content-end">
+                            <a href="{{ url_for('search.index') }}" class="btn btn-outline-secondary">Batal</a>
+                            <button type="submit" class="btn btn-danger">
+                                <i class="bi bi-shield-plus me-2"></i>Tambahkan ke Daftar Cekal
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

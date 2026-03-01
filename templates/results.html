@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+{% block title %}Hasil Pencarian: {{ query }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+    <!-- Search Summary -->
+    <div class="d-flex align-items-start justify-content-between mb-3 flex-wrap gap-2">
+        <div>
+            <h4 class="mb-0 fw-bold">
+                <i class="bi bi-search me-2 text-primary"></i>Hasil Pencarian
+            </h4>
+            <small class="text-muted">
+                Kata kunci: <strong>"{{ query }}"</strong> &mdash;
+                ditemukan <strong>{{ total }}</strong> hasil
+                {% if detected_type == "passport" %}(pencarian nomor paspor){% else %}(pencarian nama){% endif %}
+            </small>
+            {% if active_filters %}
+            <div class="mt-2 d-flex flex-wrap gap-1 align-items-center">
+                <small class="text-muted me-1"><i class="bi bi-funnel-fill"></i> Filter:</small>
+                {% for label, value in active_filters.items() %}
+                <span class="badge text-bg-primary" style="font-weight:500;">{{ label }}: {{ value }}</span>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+        <a href="{{ url_for('search.index') }}" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-arrow-left me-1"></i>Cari Lagi
+        </a>
+    </div>
+
+    {% if total == 0 %}
+    <!-- No Results -->
+    <div class="text-center py-5">
+        <div style="font-size:4rem;">🔍</div>
+        <h5 class="mt-3 text-muted">Tidak Ada Hasil</h5>
+        <p class="text-muted">Penumpang dengan identitas "<strong>{{ query }}</strong>" tidak ditemukan dalam database.</p>
+        <a href="{{ url_for('search.index') }}" class="btn btn-primary">
+            <i class="bi bi-search me-1"></i>Cari Lagi
+        </a>
+    </div>
+
+    {% else %}
+
+    <!-- Warning: Blacklisted results found -->
+    {% set blacklisted_count = results | selectattr('blacklist') | list | length %}
+    {% if blacklisted_count > 0 %}
+    <div class="alert alert-danger border-danger mb-3" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        <strong>Perhatian!</strong> Terdapat <strong>{{ blacklisted_count }}</strong> identitas dalam daftar cekal dari hasil pencarian ini. Tinjau segera.
+    </div>
+    {% endif %}
+
+    <!-- Results List -->
+    {% for item in results %}
+    {% set p = item.passenger %}
+    {% set bl = item.blacklist %}
+    <div class="card result-card {% if bl %}{% if bl.match_confidence == 'SOFT' %}soft-warning{% else %}blacklisted{% endif %}{% endif %}">
+        <div class="card-body">
+            <div class="row align-items-center">
+
+                <!-- Avatar + Flag -->
+                <div class="col-auto">
+                    <div style="width:56px;height:56px;background:linear-gradient(135deg,#003580,#0d6efd);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:white;">
+                        👤
+                    </div>
+                </div>
+
+                <!-- Passenger Info -->
+                <div class="col">
+                    <div class="d-flex align-items-center gap-2 flex-wrap">
+                        <h5 class="mb-0 fw-bold">{{ p.full_name }}</h5>
+                        {% if bl %}
+                            {% if bl.match_confidence == 'SOFT' %}
+                            <span class="badge bg-warning text-dark">
+                                <i class="bi bi-exclamation-triangle me-1"></i>Perlu Verifikasi
+                            </span>
+                            {% else %}
+                            <span class="badge bg-danger">
+                                <i class="bi bi-shield-fill-x me-1"></i>DAFTAR CEKAL
+                            </span>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                    <div class="mt-1 text-muted" style="font-size:0.87rem;">
+                        <span class="me-3">
+                            <i class="bi bi-passport me-1"></i>
+                            <code>{{ p.passport_number }}</code>
+                        </span>
+                        <span class="me-3">
+                            🌍 {{ p.nationality_name or p.nationality }}
+                        </span>
+                        <span>
+                            <i class="bi bi-calendar3 me-1"></i>
+                            {{ p.date_of_birth }}
+                        </span>
+                    </div>
+                    {% if bl and bl.match_confidence != 'SOFT' %}
+                    <div class="mt-1">
+                        <span class="badge severity-{{ bl.severity | lower }} blacklist-badge-severity me-1">
+                            {{ bl.severity }}
+                        </span>
+                        <small class="text-danger fw-semibold">{{ bl.reason_code | replace('_', ' ') }}</small>
+                    </div>
+                    {% elif bl and bl.match_confidence == 'SOFT' %}
+                    <div class="mt-1">
+                        <small class="text-warning fw-semibold">⚠️ Nama serupa ditemukan di daftar cekal - verifikasi identitas</small>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Action -->
+                <div class="col-auto">
+                    <a href="{{ url_for('passenger.detail', passport_number=p.passport_number) }}"
+                       class="btn {% if bl and bl.match_confidence != 'SOFT' %}btn-danger{% elif bl %}btn-warning{% else %}btn-primary{% endif %} btn-sm">
+                        <i class="bi bi-eye me-1"></i>Lihat Detail
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+    {% endif %}
+</div>
+{% endblock %}

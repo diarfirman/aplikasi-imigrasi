@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Berhasil Ditambahkan{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6 text-center">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-5">
+                    <div style="font-size:4rem;" class="mb-3">🛡️</div>
+                    <h4 class="fw-bold text-success mb-2">Berhasil Ditambahkan</h4>
+                    <p class="text-muted mb-3">
+                        <strong>{{ data.full_name }}</strong> telah ditambahkan ke daftar cekal.
+                    </p>
+                    <div class="bg-light rounded p-3 text-start mb-4">
+                        <div class="row g-2">
+                            <div class="col-5 text-muted small">Nomor Paspor:</div>
+                            <div class="col-7 fw-semibold"><code>{{ data.passport_number or '-' }}</code></div>
+                            <div class="col-5 text-muted small">Nama:</div>
+                            <div class="col-7 fw-semibold">{{ data.full_name }}</div>
+                            <div class="col-5 text-muted small">Tingkat:</div>
+                            <div class="col-7">
+                                <span class="badge severity-{{ data.severity | lower }}">{{ data.severity }}</span>
+                            </div>
+                            <div class="col-5 text-muted small">Kode Alasan:</div>
+                            <div class="col-7 fw-semibold">{{ data.reason_code | replace('_', ' ') }}</div>
+                        </div>
+                    </div>
+                    <div class="d-flex gap-2 justify-content-center">
+                        <a href="{{ url_for('search.index') }}" class="btn btn-primary">
+                            <i class="bi bi-search me-1"></i>Kembali ke Pencarian
+                        </a>
+                        <a href="{{ url_for('admin.blacklist_form') }}" class="btn btn-outline-danger">
+                            <i class="bi bi-shield-plus me-1"></i>Tambah Lagi
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
